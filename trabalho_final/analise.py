@@ -5,7 +5,6 @@ arquivo = open('dados/saida2.txt')
 
 x = []
 
-
 for linha in arquivo:
     l = linha.split(' ')[0]
     x.append(float(l))
