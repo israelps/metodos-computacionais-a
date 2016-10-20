@@ -35,7 +35,6 @@ for linha in arquivo:
     x.append(float(linha))
 arquivo.close()
 
-
 # loop que percorre o vetor x e calcula a funcao de bessel para cada valor de x
 # resultado formatado para 6 casas significativas
 for i in x:
