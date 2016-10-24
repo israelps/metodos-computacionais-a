@@ -6,23 +6,26 @@ from numba import jit, guvectorize
 from montecarlo import Metropolis
 
 
-
-def V(r,Z):
+def V(r, Z):
     potencial = 0
     sigma = 0.0025
     for i in range(len(r)):  # potencial da placa
-        potencial += sigma * Z[i]*e * r[i][0] / (80 * epsilon_0)
-        for k in range(i + 1, len(r)):# potencial entre os ions
-            potencial += Z[i]*Z[k]*pow(e, 2) / (4 * pi * (80 * epsilon_0)
-                                      * np.linalg.norm(r[i] - r[k]))
+        potencial += sigma * Z[i] * e * r[i][0] / (80 * epsilon_0)
+        for k in range(i + 1, len(r)):  # potencial entre os ions
+            potencial += Z[i] * Z[k] * pow(e, 2) / (
+                4 * pi * (80 * epsilon_0) * np.linalg.norm(r[i] - r[k]))
     return potencial
 
 
 # gera um vetor inicial aleatorio [n_ions,3] onde 3 são as coordenadas
 # espaciais x,y,z
 @jit
-def get_vetor_inicial(n_ions):
-    return np.random.uniform(0, 25 * nano, size=[n_ions, 3])
+def get_vetor_inicial(concentracao):
+    n = len(concentracao)
+    Z = [[concentracao[i][0] for i in range(n)] for k in range(i[2])]
+    np.random.uniform(0, 25 * nano, size=[len(Z), 3])
+    return
+
 
 def c_contorno(r):
     for ion in range(len(r)):
@@ -46,22 +49,24 @@ def c_contorno(r):
     return r
 
 # vetor = [Z,raio,n_ions]
+
+
 def get_concentracao(vetor):
     n = len(vetor)
-    Z = [vetor[i][0]*vetor[i][2] for i in range(n)]
+    Z = [vetor[i][0] * vetor[i][2] for i in range(n)]
     return Z
 
 
 print('Iniciando algoritimo...')
 if __name__ == '__main__':
-    Z = [[1,0,50],[2,0,50]]
-    Z = get_concentracao(Z)
-    n_ions = len(Z)
+    Z = [[1, 0, 50], [2, 0, 50]]
+
+
     r = get_vetor_inicial(n_ions)
     T = 300
     N = 2000
-    step = nano
+    step = nano * pow(11, -1)
 
-    m = Metropolis(V,Z,c_contorno,N,r,step,T)
+    m = Metropolis(V, Z, c_contorno, N, r, step, T)
 
     m.run()

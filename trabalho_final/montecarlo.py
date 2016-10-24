@@ -5,9 +5,10 @@ from math import exp
 from scipy.constants import k
 from numba import jit
 
+
 class Metropolis:
 
-    def __init__(self, V,Z, c_contorno, n_iter, r, step, T):
+    def __init__(self, V, Z, c_contorno, n_iter, r, step, T):
         self.V = V
         self.Z = Z
         self.n_iter = n_iter
@@ -26,18 +27,17 @@ class Metropolis:
         else:
             get_random()
 
-    @jit
     def run(self):
         t = time()
         aceito, boltz, rejeitado = 0, 0, 0
-        v = self.V(self.r,self.Z)  # potencial inicial
+        v = self.V(self.r, self.Z)  # potencial inicial
         f = open('dados/saida3.txt', 'ab')
         for i in range(self.n_iter):
 
-            np.savetxt(f, self.r)
+            np.savetxt(f, np.vstack((, self.r)))
 
             r_ = self.get_random()
-            v_ = self.V(r_,self.Z)
+            v_ = self.V(r_, self.Z)
 
             delta_v = v_ - v
 
