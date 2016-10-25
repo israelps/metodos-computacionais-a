@@ -3,7 +3,6 @@ from time import time
 from random import random
 from math import exp
 from scipy.constants import k
-from numba import jit
 
 
 class Metropolis:
@@ -17,12 +16,11 @@ class Metropolis:
         self.T = T
         self.c_contorno = c_contorno
 
-    @jit
     def get_random(self):
         dx = self.step * np.random.uniform(-1, 1, size=[len(self.r), 3])
         r_ = self.r + dx
         if np.linalg.norm(dx) < 1:
-            r_ = self.c_contorno(r_)
+            r_ = self.c_contorno(r_, self.Z)
             return r_
         else:
             get_random()
@@ -34,7 +32,7 @@ class Metropolis:
         f = open('dados/saida3.txt', 'ab')
         for i in range(self.n_iter):
 
-            np.savetxt(f, np.vstack((, self.r)))
+            np.savetxt(f, np.hstack((self.Z, self.r)))
 
             r_ = self.get_random()
             v_ = self.V(r_, self.Z)
