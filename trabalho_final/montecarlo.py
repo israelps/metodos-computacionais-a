@@ -3,6 +3,8 @@ from time import time
 from random import random
 from math import exp
 from scipy.constants import k
+from numba import jit
+import os
 
 
 class Metropolis:
@@ -16,6 +18,7 @@ class Metropolis:
         self.T = T
         self.c_contorno = c_contorno
 
+    @jit
     def get_random(self):
         dx = self.step * np.random.uniform(-1, 1, size=[len(self.r), 3])
         r_ = self.r + dx
@@ -25,10 +28,13 @@ class Metropolis:
         else:
             get_random()
 
+    @jit
     def run(self):
         t = time()
         aceito, boltz, rejeitado = 0, 0, 0
         v = self.V(self.r, self.Z)  # potencial inicial
+        os.remove('dados/saida3.txt')
+
         f = open('dados/saida3.txt', 'ab')
         for i in range(self.n_iter):
 

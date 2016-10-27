@@ -6,6 +6,7 @@ from numba import jit, guvectorize
 from montecarlo import Metropolis
 
 
+@jit
 def V(r, Z):
     potencial = 0
     sigma = 0.0025
