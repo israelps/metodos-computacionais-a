@@ -25,10 +25,7 @@ class Metropolis:
         if np.linalg.norm(dx) < 1:
             r_ = self.c_contorno(r_, self.Z)
             return r_
-        else:
-            get_random()
 
-    @jit
     def run(self):
         t = time()
         aceito, boltz, rejeitado = 0, 0, 0
@@ -38,7 +35,7 @@ class Metropolis:
         f = open('dados/saida3.txt', 'ab')
         for i in range(self.n_iter):
 
-            np.savetxt(f, np.hstack((self.Z, self.r)))
+            np.savetxt(f, np.hstack((self.Z, self.r)), fmt='%d %e %e %e %e')
 
             r_ = self.get_random()
             v_ = self.V(r_, self.Z)
