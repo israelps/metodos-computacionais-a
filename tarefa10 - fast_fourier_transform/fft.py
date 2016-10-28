@@ -1,29 +1,43 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.fftpack import fft
+from scipy.fftpack import fft, ifft
+
+L, R, C = 1, 6, 5
 
 
-def dirac_delta(r):
-    return np.array([i if i == 0 else 0 for i in r])
+def H(t):
+    return np.exp(-t / 3) - np.exp(-t / 2)
 
-N = 1000
-T = 1 / 800
-f = N*T
-x = np.linspace(-f, f, N)
 
-w = 2*np.pi
+def y(w):
+    return 1 / (1j * R * C * w - L * C * w**2 + 1)
 
-y = np.cos(w * x)
 
-yt = fft(y)
-f = 1/(2*T)
-xt = np.linspace(-f, f , N/2)
+def idfft(x):
+    N = len(x)
+    w0 = np.pi / N
+    xi = np.zeros(N)
+    for i in range(N):
+        xi[i] = 1 / N * sum([x[k] * np.exp(1j * k * w0 * i) for k in range(N)])
+    return xi
 
-fig, ax = plt.subplots(2, 1)
-ax[0].plot(x,y)
-ax[0].set_xlabel('Time')
-ax[0].set_ylabel('Amplitude')
-ax[1].plot(xt,2.0/N * yt[:N//2],'r') # plotting the spectrum
-ax[1].set_xlabel(' w ')
-ax[1].set_ylabel('|Y(w)|')
+def dfft(x):
+    N = len(x)
+    w0 = np.pi / N
+    xt = np.zeros(N)
+    for i in range(N):
+        xt[i] = sum([x[k] * np.exp(-1j * k * w0 * i) for k in range(N)])
+    return xt
+
+
+N = 100
+t = np.linspace(0, 10, N)
+h = H(t)
+ht = dfft(h)
+
+
+#plt.plot(t, H(t))
+plt.plot(t, np.abs(ht))
+plt.plot(t, np.abs(fft(h)))
+plt.grid()
 plt.show()
