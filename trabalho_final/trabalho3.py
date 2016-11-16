@@ -22,7 +22,6 @@ def V(r, Z):
 # espaciais x,y,z
 
 def get_vetor_inicial(concentracao):
-
     Z = []
     for i in concentracao:
         for k in range(i[2]):
@@ -35,12 +34,12 @@ def get_vetor_inicial(concentracao):
 @jit
 def c_contorno(r, Z):
     norma = np.linalg.norm(r, axis=1)
-    for i in range(len(norma)):
+    '''for i in range(len(norma)):
         for k in range(i + 1):
             x = np.abs(norma[k] - norma[i])
             if x <= 5.2917721067e-11:
-                r[i] = r[i]+nano
-                r[k] = r[k]+nano
+                r[i] = r[i]+nano'''
+
 
     for ion in range(len(r)):
         if r[ion][0] < 0:
@@ -67,12 +66,13 @@ print('Iniciando algoritimo...')
 if __name__ == '__main__':
     raio = 5.2917721067e-11
 
-    Z = [[1, raio, 50], [2, raio, 50]]
+    Z = [[1, raio, 150],[-2, raio, 10]]
 
     r, Z = get_vetor_inicial(Z)
+
     T = 300
-    N = 2000
-    step = nano * pow(10, -1)
+    N = 5000
+    step = nano*pow(10,-3)
 
     m = Metropolis(V, Z, c_contorno, N, r, step, T)
 

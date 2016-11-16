@@ -28,35 +28,75 @@ class Metropolis:
 
     def run(self):
         t = time()
-        aceito, boltz, rejeitado = 0, 0, 0
+        aceito_global, rejeitado_global = 0, 0
         v = self.V(self.r, self.Z)  # potencial inicial
-        os.remove('dados/saida3.txt')
 
-        f = open('dados/saida3.txt', 'ab')
-        for i in range(self.n_iter):
+        v_min_anterior = 2000 * v
 
-            np.savetxt(f, np.hstack((self.Z, self.r)), fmt='%d %e %e %e %e')
+        f_energia = open('dados/saida3_energia.txt', 'wb')
+        condicao = False
+        N = 2000
+        while True:
+            v_min = v
+            f = open('dados/saida3.txt', 'wb')
+            aceito, rejeitado = 0, 0
 
-            r_ = self.get_random()
-            v_ = self.V(r_, self.Z)
+            for i in range(N):
+                r_ = self.get_random()
+                v_ = self.V(r_, self.Z)
 
-            delta_v = v_ - v
+                delta_v = v_ - v
 
-            if (delta_v) < 0:
-                self.r = r_
-                v = v_
-                aceito += 1
+                if(i % 50 == 0):
+                    var = aceito / 50
+                    aceito = 0
+                    rejeitado = 0
+                    if(var <= 0.4):
+                        self.step *= 0.9
+                        print('step alterado para: %e' % (self.step))
+                    if(var >= 0.6):
+                        print('step alterado para: %e' % (self.step))
+                        self.step *= 1.1
 
-            elif (random() < exp(-delta_v / (k * self.T))):
-                self.r = r_
-                v = v_
-                boltz += 1
+                if (delta_v) < 0:
+                    self.r = r_
+                    v = v_
+                    aceito += 1
+                    aceito_global += 1
+
+                elif (random() < exp(-delta_v / (k * self.T))):
+                    self.r = r_
+                    v = v_
+                    aceito += 1
+                    aceito_global += 1
+                else:
+                    rejeitado += 1
+                    rejeitado_global += 1
+
+                if(v < v_min):
+                    v_min = v
+                np.savetxt(f_energia, [v])
+                np.savetxt(f, np.hstack((self.Z, self.r)),
+                           fmt='%d %e %e %e %e')
+
+            f.close()
+
+            if(abs((v_min - v_min_anterior) / v_min) <= 0.01):
+                if condicao:
+                    break
+                condicao = True
+                N = int(N * 2)
+                print('condicao True')
             else:
-                rejeitado += 1
+                if condicao:
+                    N = int(N / 2)
+                condicao = False
 
-        f.close()
-        print('%d aceitos; %d aceitos por boltzman; %d rejeitados;' %
-              (aceito, boltz, rejeitado))
-        rejeitado = rejeitado * 100 / self.n_iter
-        print('taxa de rejeição: %d por cento' % rejeitado)
+                v_min_anterior = v_min
+                print('condicao False')
+        f_energia.close()
+        print('%d aceitos; %d rejeitados;' %
+              (aceito_global, rejeitado_global))
+        rejeitado_global = rejeitado_global * 100 / self.n_iter
+        print('taxa de rejeição: %d por cento' % rejeitado_global)
         print('tempo total de execução: %d s' % (time() - t))

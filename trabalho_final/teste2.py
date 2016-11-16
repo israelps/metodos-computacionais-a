@@ -1,21 +1,11 @@
-import math
-from numba import vectorize, cuda
-import numpy as np
+from scipy.optimize import basinhopping
 
-@vectorize(['float32(float32, float32, float32)',
-            'float64(float64, float64, float64)'],
-           target='cuda')
-def cu_discriminant(a, b, c):
-    return math.sqrt(b ** 2 - 4 * a * c)
-
-N = 1e+4
-dtype = np.float32
-
-# prepare the input
-A = np.array(np.random.sample(N), dtype=dtype)
-B = np.array(np.random.sample(N) + 10, dtype=dtype)
-C = np.array(np.random.sample(N), dtype=dtype)
-
-D = cu_discriminant(A, B, C)
-
-print(D)  # print result
+def V(r):
+    potencial = 0
+    sigma = 0.0025
+    for i in range(len(r)):  # potencial da placa
+        potencial += sigma  * e * r[i][0] / (80 * epsilon_0)
+        for k in range(i + 1, len(r)):  # potencial entre os ions
+            potencial += pow(e, 2) / (
+                4 * pi * (80 * epsilon_0) * np.linalg.norm(r[i] - r[k]))
+    return potencial

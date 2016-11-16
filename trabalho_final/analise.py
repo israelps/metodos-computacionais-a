@@ -19,7 +19,7 @@ arquivo.close()
 #a = a.ravel()
 plt.hist(z1, 50, normed=1, facecolor='green', alpha=0.75)
 plt.hist(z2, 50, normed=1, facecolor='blue', alpha=0.75)
-#plt.tight_layout()
+# plt.tight_layout()
 plt.show()
 '''
 plt.title('Concentração de Íons em uma solução aquosa\n sob efeito de um campoelétrico (placa infinita)')
