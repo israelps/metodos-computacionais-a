@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.fftpack import fft, ifft
+from scipy.fftpack import fft, ifft, fftfreq
 
 L, R, C = 1, 6, 5
 
@@ -33,11 +33,13 @@ def dfft(x):
 N = 100
 t = np.linspace(0, 10, N)
 h = H(t)
-ht = dfft(h)
+ht = fft(h)
+n = ht.size
+freq = fftfreq(n,d=0.1)
 
 
 #plt.plot(t, H(t))
-plt.plot(t, np.abs(ht))
-plt.plot(t, np.abs(fft(h)))
+plt.plot(t, h)
+plt.plot(freq, ht)
 plt.grid()
 plt.show()

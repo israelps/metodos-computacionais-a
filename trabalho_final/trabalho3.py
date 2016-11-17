@@ -72,7 +72,7 @@ if __name__ == '__main__':
 
     T = 300
     N = 5000
-    step = nano*pow(10,-3)
+    step = nano
 
     m = Metropolis(V, Z, c_contorno, N, r, step, T)
 
