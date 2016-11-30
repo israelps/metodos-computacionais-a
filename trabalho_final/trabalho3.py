@@ -27,52 +27,52 @@ def get_vetor_inicial(concentracao):
         for k in range(i[2]):
             Z.append([i[0], i[1]])
     Z = np.asarray(Z)
-    r = np.random.uniform(0, 25 * nano, size=[len(Z), 3])
+    r = np.random.uniform(0, 50 * nano, size=[len(Z), 3])
     return r, Z
 
 
 @jit
 def c_contorno(r, Z):
-    norma = np.linalg.norm(r, axis=1)
-    '''for i in range(len(norma)):
-        for k in range(i + 1):
-            x = np.abs(norma[k] - norma[i])
-            if x <= 5.2917721067e-11:
-                r[i] = r[i]+nano'''
+    l_caixa = 50 * nano
+    flag = False
+    for i in range(len(r)):
+        if r[i][0] < 0:
+            r[i][0] = -r[i][0]
 
+        if r[i][0] > l_caixa:
+            r[i][0] = 2 * l_caixa - r[i][0]
 
-    for ion in range(len(r)):
-        if r[ion][0] < 0:
-            r[ion][0] = -r[ion][0]
+        if r[i][1] <= 0:
+            r[i][1] = -r[i][1]
 
-        if r[ion][0] > 25:
-            r[ion][0] = 50 * nano - r[ion][0]
+        if r[i][1] >= l_caixa:
+            r[i][1] = 2 * l_caixa - r[i][1]
 
-        if r[ion][1] <= 0:
-            r[ion][1] += 25 * nano
+        if r[i][2] <= 0:
+            r[i][2] += l_caixa
 
-        if r[ion][1] >= 25 * nano:
-            r[ion][1] -= 25 * nano
+        if r[i][2] >= l_caixa:
+            r[i][2] -= l_caixa
 
-        if r[ion][2] <= 0:
-            r[ion][2] += 25 * nano
-
-        if r[ion][2] >= 25 * nano:
-            r[ion][2] -= 25 * nano
-    return r
+        for k in range(i + 1, len(r)):
+            diff_r = r[i] - r[k]
+            norm_r = np.linalg.norm(diff_r)
+            if norm_r <= (Z[i][1] + Z[k][1]):
+                flag = True
+                break
+    return r, flag
 
 
 print('Iniciando algoritimo...')
 if __name__ == '__main__':
-    raio = 5.2917721067e-11
 
-    Z = [[1, raio, 150],[-2, raio, 10]]
+    Z = [[1, 0.095 * nano, 50], [-1, 0.095 * nano, 50]]
 
     r, Z = get_vetor_inicial(Z)
 
-    T = 300
+    T = 280
     N = 5000
-    step = nano
+    step = 5 * pow(10, -10)
 
     m = Metropolis(V, Z, c_contorno, N, r, step, T)
 

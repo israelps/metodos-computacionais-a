@@ -1,31 +1,36 @@
 import matplotlib.pyplot as plt
-from scipy.constants import nano
+from scipy.constants import nano, k
+import numpy as np
+from math import sqrt
+
+from mpl_toolkits.mplot3d import Axes3D
+
 
 arquivo = open('dados/saida3.txt')
+dados = arquivo.readlines()
+arquivo.close()
+r1 = []
+r2 = []
 
-z1 = []
-z2 = []
 titles = ['Z=1', 'Z=-1']
 
-for linha in arquivo:
+for linha in dados:
     l = linha.split(' ')
-    if int(l[0]) == 1:
-        z1.append(float(l[2]))
-    elif int(l[0]) == 2:
-        z2.append(float(l[2]))
-arquivo.close()
+    zE = int(l[0])
+    r = [float(i) for i in l[2:]]
+    if zE == 1:
+        r1.append(r)
+    elif zE == -1:
+        r2.append(r)
 
-#f, a = plt.subplots(2, 2)
-#a = a.ravel()
-plt.hist(z1, 50, normed=1, facecolor='green', alpha=0.75)
-plt.hist(z2, 50, normed=1, facecolor='blue', alpha=0.75)
-# plt.tight_layout()
-plt.show()
-'''
-plt.title('Concentração de Íons em uma solução aquosa\n sob efeito de um campoelétrico (placa infinita)')
-plt.ylabel('Concentração de Íons')
-plt.xlabel('Distância da placa')
+
+plt.hist([i[0] for i in r1], 50, normed=1, facecolor='green', alpha=0.75)
+plt.hist([i[0] for i in r2], 50, normed=1, facecolor='blue', alpha=0.75)
+
+
+plt.title('Concentração de Ions em uma solução aquosa em contato\n com uma superficie de Ferrita de cobalto (CoFe2O4)')
+plt.ylabel('Concentração de Ions')
+plt.xlabel('Distância do eixo X')
 plt.grid(True)
-# plt.axis([0,25*nano,0,10000])
+print(len(dados))
 plt.show()
-'''
