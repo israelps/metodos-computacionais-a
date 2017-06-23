@@ -1,6 +1,7 @@
 '''Escrito em python3'''
 from math import sqrt,pi,pow,exp
 
+# atualizado via git
 # cabecalho
 print('-----------------------------------------------------------')
 print('-------------  Aluno: Israel P. Siqueira  -----------------')
