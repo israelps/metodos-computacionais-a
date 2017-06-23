@@ -2,6 +2,7 @@
 from math import sqrt,pi,pow,exp
 
 # atualizado via git
+# atualizado no servidor
 # cabecalho
 print('-----------------------------------------------------------')
 print('-------------  Aluno: Israel P. Siqueira  -----------------')
